@@ -1,0 +1,1 @@
+import{u as g,j as o,B as u}from"./index-B8pqg-ZJ.js";function r({variant:n="outline",className:t}){const{language:a,toggleLanguage:e}=g();return o.jsx(u,{type:"button",variant:n,onClick:e,className:t,children:a==="ar"?"English":"العربية"})}export{r as L};
