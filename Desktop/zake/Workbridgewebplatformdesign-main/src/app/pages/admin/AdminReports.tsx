@@ -42,6 +42,18 @@ function getReportStatusLabel(status: string, isEnglish: boolean) {
       return status;
     }
 
+    if (status === 'جديد') {
+      return 'New';
+    }
+
+    if (status === 'قيد المراجعة') {
+      return 'Under Review';
+    }
+
+    if (status === 'مغلق') {
+      return 'Closed';
+    }
+
     return getDisplayStatusLabel(status, true);
   }
 
@@ -101,18 +113,28 @@ function getReportTargetLabel(source: string, targetLabel: string, isEnglish: bo
 }
 
 function getReportDescriptionLabel(description: string, isEnglish: boolean) {
+  const normalized = description.trim();
+
   if (isEnglish) {
-    switch (description.trim()) {
+    switch (normalized) {
       case 'General chat report':
       case 'Abusive behavior or inappropriate content':
       case 'Spam or misleading content':
       case 'Abusive behavior in the conversation':
-        return description;
+        return normalized;
+      case 'بلاغ عام على المحادثة':
+        return 'General chat report';
+      case 'إساءة استخدام أو محتوى غير مناسب':
+        return 'Abusive behavior or inappropriate content';
+      case 'محتوى مزعج أو مزيف':
+        return 'Spam or misleading content';
+      case 'سلوك مسيء في المحادثة':
+        return 'Abusive behavior in the conversation';
       default:
         break;
     }
   } else {
-    switch (description.trim()) {
+    switch (normalized) {
       case 'General chat report':
         return 'بلاغ عام على المحادثة';
       case 'Abusive behavior or inappropriate content':
@@ -126,34 +148,34 @@ function getReportDescriptionLabel(description: string, isEnglish: boolean) {
     }
   }
 
-  const projectMatch = description.match(/^تم إرسال بلاغ على المشروع "(.+)" لمراجعته من قبل الأدمن\.$/);
+  const projectMatch = normalized.match(/^تم إرسال بلاغ على المشروع "(.+)" لمراجعته من قبل الأدمن\.$/);
   if (projectMatch) {
     return isEnglish
       ? `A report was submitted for the project "${projectMatch[1]}" for admin review.`
-      : description;
+      : normalized;
   }
 
-  const jobMatch = description.match(/^تم إرسال بلاغ على الوظيفة "(.+)" لمراجعتها من قبل الأدمن\.$/);
+  const jobMatch = normalized.match(/^تم إرسال بلاغ على الوظيفة "(.+)" لمراجعتها من قبل الأدمن\.$/);
   if (jobMatch) {
     return isEnglish
       ? `A report was submitted for the job "${jobMatch[1]}" for admin review.`
-      : description;
+      : normalized;
   }
 
-  const serviceMatch = description.match(/^تم إرسال بلاغ على الخدمة "(.+)" لمراجعتها من قبل الأدمن\.$/);
+  const serviceMatch = normalized.match(/^تم إرسال بلاغ على الخدمة "(.+)" لمراجعتها من قبل الأدمن\.$/);
   if (serviceMatch) {
     return isEnglish
       ? `A report was submitted for the service "${serviceMatch[1]}" for admin review.`
-      : description;
+      : normalized;
   }
 
-  const supportEscalationMatch = description.match(
+  const supportEscalationMatch = normalized.match(
     /^تم تحويل التذكرة "(.+)" من مركز الدعم إلى مركز التقارير لمراجعة أعمق\. التفاصيل الأصلية: (.+)$/s,
   );
   if (supportEscalationMatch) {
     return isEnglish
       ? `The ticket "${supportEscalationMatch[1]}" was escalated from Support Center to Reports Center for deeper review. Original details: ${supportEscalationMatch[2]}`
-      : description;
+      : normalized;
   }
 
   return description;
@@ -164,9 +186,12 @@ function getReportReporterLabel(reporter: string, isEnglish: boolean) {
 
   if (isEnglish) {
     switch (normalized) {
+      case 'Current user':
+      case 'Personal account user':
       case 'المستخدم الحالي':
       case 'مستخدم الحساب الشخصي':
         return 'Current user';
+      case 'Support Center':
       case 'مركز الدعم':
         return 'Support Center';
       default:
